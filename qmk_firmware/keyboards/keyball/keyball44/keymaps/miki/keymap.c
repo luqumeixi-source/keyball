@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "pair_macros.h"
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
@@ -24,6 +25,7 @@ enum custom_keycodes {
     PAIR_PAREN = QK_KB_16,
     PAIR_BRACKET= QK_KB_17,
     PAIR_BRACE= QK_KB_18,
+    WRAP_MODE,
 };
 
 // clang-format off
@@ -60,31 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    const char *pair;
-
-    switch (keycode) {
-        case PAIR_PAREN:
-            pair = "()";
-            break;
-
-        case PAIR_BRACKET:
-            pair = "[]";
-            break;
-
-        case PAIR_BRACE:
-            pair = "{}";
-            break;
-
-        default:
-            return true;
-    }
-
-    if (record->event.pressed) {
-        send_string(pair);
-        tap_code(KC_LEFT);
-    }
-
-    return false;
+    return process_pair_macro(keycode, record->event.pressed);
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
